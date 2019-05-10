@@ -1,0 +1,27 @@
+{% extends "axfApp/base/base.html" %}
+{% load static %}
+
+{% block title %}首页{% endblock title %}
+
+{% block link %}
+    <link rel="stylesheet" type="text/css" href="{% static 'axfApp/home/css/home.css' %}">
+{% endblock link %}
+
+{% block script %}
+    <script type="application/javascript" src="{% static 'axfApp/home/js/home.js' %}"></script>
+{% endblock script %}
+
+{% block main %}
+    <div id="homeDiv">
+        <div class="swiper-container" id="topDiv">
+            <div class="swiper-wrapper">
+                {% for item in more_goods %}
+                <div class="swiper-slide">
+                    <a href="#"><img src="{{ item.img }}" title="{{ item.name }}" /></a>
+                </div>
+                <li>111111111</li>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock main %}

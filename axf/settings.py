@@ -20,12 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's$z21zhx(_@m=*#sy32edw%b2(7032&a_s1ou(u*%rrzy4yf1!'
+SECRET_KEY = '&4bjhnxk9pre-lyoxnd19o3nrzmxj!=bakq&aqnmr)o9*-h43='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.163.com'  # 如果是 163 改成 smtp.163.com
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '18735368373@163.com' # 帐号
+EMAIL_HOST_PASSWORD = 'yy1017'  # 密码
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 
 
 # Application definition
@@ -48,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axfApp.middlewares.verifycodeMiddleware.VerifycodeMiddleware',
+    'axfApp.middlewares.loginMiddleware.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'axf.urls'
@@ -55,7 +66,7 @@ ROOT_URLCONF = 'axf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,11 +84,18 @@ WSGI_APPLICATION = 'axf.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
+# 数据库配置
+# 在项目同名包下的__init__文件中，导入并安装pymysql模块
+#  import pymysql
+#  pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': '1810axf',
+        'USER': 'root',
+        'PASSWORD': 'yy1017',
+        'HOST': '59.110.174.253',
+        'PORT': 3306
     }
 }
 
@@ -104,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -119,3 +137,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/axfApp/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+
+
+
+# 缓存配置
+CACHES = {
+    'default':{
+        'BACKEND':'redis_cache.cache.RedisCache',
+        'LOCATION':'59.110.174.253:6379',
+        'TIMEOUT':60*60*24*15,
+        'OPTIONS':{
+            'PASSWORD':'yy1017',
+            'CLIENT_CLASS':'redis_cache.client.DefaultClient'
+        }
+    }
+}
